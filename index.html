@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>ELECTRO LAB — Виртуалды электр зертханасы</title>
+<style>
+:root{--tx:#10254A;--pn:#DCEEFF;--bg:#F0F7FF;--ac:#00A6C7;--ng:#2563EB;--ps:#E53935;--ne:#94A3B8;--ok:#16A34A;--wr:#F4B400}
+*{box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;font:600 19px system-ui,Segoe UI,Roboto,sans-serif;color:var(--tx);background:linear-gradient(135deg,#fff,var(--bg));overflow:hidden}
+button,select{font:inherit;min-height:48px;border:0;border-radius:14px;padding:8px 14px;background:#fff;color:var(--tx);box-shadow:0 2px 8px #10254a26,inset 0 -2px 0 #10254a14;cursor:pointer}
+button:hover{background:#e6f2ff}button.on{background:var(--ac);color:#fff}
+#home{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;padding:2vh 2vw;overflow:auto}
+#home h1{font-size:clamp(40px,7vw,96px);margin:0;letter-spacing:.08em;background:linear-gradient(90deg,var(--ng),var(--ac),var(--ps));-webkit-background-clip:text;background-clip:text;color:transparent}
+#home h2{margin:0;font-size:clamp(22px,2.6vw,40px)}#home p{margin:6px 0 14px;color:#10254acc;font-size:clamp(16px,1.6vw,26px)}
+#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:min(1800px,96vw);flex:1}
+.cd{background:#fff;border-radius:26px;padding:16px;box-shadow:0 10px 30px #10254a22;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;border:3px solid #dceeff;position:relative;z-index:1}
+.cd .ic{font-size:clamp(44px,5vw,78px);width:1.5em;height:1.5em;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,var(--pn));box-shadow:0 8px 18px #2563eb33}
+.cd h3{margin:8px 0 4px;font-size:clamp(18px,1.7vw,28px)}.cd span{font-size:clamp(14px,1.2vw,20px);flex:1;color:#10254acc}.cd button{background:var(--ng);color:#fff;margin-top:10px;width:100%}
+#hb{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1}.orb{position:fixed;border-radius:50%;filter:blur(40px);opacity:.35;z-index:0}
+#lab{position:fixed;inset:0;display:grid;grid-template:64px 1fr 72px/290px 1fr 350px;grid-template-areas:"t t t" "l c r" "b b b"}
+#lab.full{grid-template:0 1fr 0/0 1fr 0}#lab.full>:not(#cvw){display:none}
+#top{grid-area:t;display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--pn)}#top b{font-size:26px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ctl{grid-area:l}#rp{grid-area:r}.pn{background:var(--pn);padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+#cvw{grid-area:c;position:relative;min-width:0;min-height:0}#cv{width:100%;height:100%;display:block;touch-action:none}
+#bt{grid-area:b;display:flex;gap:8px;align-items:center;padding:8px;background:var(--pn);overflow:auto}#bt button{flex:1;white-space:nowrap}
+#ex{position:absolute;right:10px;top:10px}#msg{position:absolute;left:10px;right:10px;bottom:8px;font-size:26px;background:#fffd;border-radius:14px;padding:8px 14px;text-align:center}
+.sl{display:flex;flex-direction:column;background:#fff;border-radius:14px;padding:6px 10px}.sl input{width:100%;height:36px}
+.box{background:#fff;border-radius:14px;padding:10px;font-size:19px;line-height:1.35}.bar{height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden}.bar i{display:block;height:100%}
+#md{position:fixed;inset:0;background:#10254a88;display:grid;place-items:center;z-index:9}#mb{background:#fff;border-radius:24px;padding:22px;max-width:min(1100px,94vw);max-height:92vh;overflow:auto;font-size:21px;line-height:1.45}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.g3 div{background:var(--bg);border-radius:16px;padding:12px;text-align:center;font-size:18px}.g3 em{font-style:normal;font-size:52px;display:block;animation:fl 2s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-8px) scale(1.1)}}
+.tg{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0}
+@media(max-width:1100px){html,body{font-size:15px}#lab{grid-template-columns:210px 1fr 250px}.box{font-size:15px}}
+</style></head><body>
+<div id="home"><h1>ELECTRO LAB</h1><h2>Виртуалды электр зертханасы</h2><p>8-сынып | Физика | §18</p><div id="grid"></div>
+<div id="hb"></div></div>
+<div id="lab" hidden><div id="top"><button id="bm">☰ Мәзір</button><b id="ti"></b><span id="no"></span><button id="bpv">◀</button><button id="bnx">▶</button><button id="bfs">⛶ Толық экран</button><button id="bhp">Панельдер</button></div>
+<div id="ctl" class="pn"></div><div id="cvw"><canvas id="cv"></canvas><button id="ex" hidden>Панельдерді көрсету</button><div id="msg" hidden></div></div>
+<div id="rp" class="pn"><div class="box" id="inf"></div><div class="box"><b>🤔 Болжам жасаңыз:</b><div id="qq"></div></div><div class="box" id="exp"></div><div class="box" id="cc"></div></div><div id="bt"></div></div>
+<div id="md" hidden><div id="mb"></div></div>
+<script>
+"use strict";
+CanvasRenderingContext2D.prototype.roundRect||(CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)});
+const $=s=>document.querySelector(s),E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),H=Math.hypot,R=Math.round,sgn=v=>v>0?1:v<0?-1:0;
+let S={snd:0,spd:1,chg:1,frc:1,mic:0,exp:1};try{Object.assign(S,JSON.parse(localStorage.electroLab||'{}'))}catch(e){}S.snd=0;
+const sv=()=>{try{localStorage.electroLab=JSON.stringify(S)}catch(e){}};
+let ac;function bp(f,d=.12,t='sine',v=.05){if(!S.snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(1e-4,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+/* drawing helpers */
+function rr(c,x,y,w,h,r,a,b){c.beginPath();c.roundRect(x,y,w,h,r);const g=c.createLinearGradient(x,y,x,y+h);g.addColorStop(0,a);g.addColorStop(1,b||a);c.fillStyle=g;c.fill();c.strokeStyle='#10254a66';c.lineWidth=2;c.stroke()}
+function ball(c,x,y,r,col){c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();const g=c.createRadialGradient(x-r/3,y-r/3,1,x,y,r);g.addColorStop(0,'#fffd');g.addColorStop(.5,'#fff0');g.addColorStop(1,'#0004');c.fillStyle=g;c.fill()}
+function tx(c,t,x,y,sz=24,col='#10254A',al='center'){c.fillStyle=col;c.font='bold '+sz+'px system-ui,sans-serif';c.textAlign=al;c.textBaseline='middle';c.fillText(t,x,y)}
+function ch(c,x,y,s,r=14){ball(c,x,y,r,s>0?'#E53935':'#2563EB');tx(c,s>0?'+':'−',x,y+1,r*1.5,'#fff')}
+function ar(c,x,y,x2,y2,col){c.strokeStyle=col;c.fillStyle=col;c.lineWidth=6;c.beginPath();c.moveTo(x,y);c.lineTo(x2,y2);c.stroke();const a=Math.atan2(y2-y,x2-x);c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-20*Math.cos(a-.4),y2-20*Math.sin(a-.4));c.lineTo(x2-20*Math.cos(a+.4),y2-20*Math.sin(a+.4));c.fill()}
+const bar=(v,c)=>'<div class="bar"><i style="width:'+R(cl(v,0,1)*100)+'%;background:'+c+'"></i></div>';
+const sg2=s=>s>0?'+':s<0?'−':'0';
+function bg(c){const g=c.createLinearGradient(0,0,0,900);g.addColorStop(0,'#fff');g.addColorStop(1,'#e4f1ff');c.fillStyle=g;c.fillRect(0,0,1600,900);c.fillStyle='#cfe3f7';c.fillRect(0,830,1600,70)}
+/* engine */
+const cv=$('#cv'),cx=cv.getContext('2d');let sc=1,ox=0,oy=0,cur=null,ci=0,pa=0,slow=0,A=[],dr=null,rev=0,sti=0,auto=0,at=0,lt=0,C=$('#ctl'),curMsg='';
+const an=(d,f)=>A.push({d,t:0,f}),tw=(o,k,v,d=1.5)=>{const a=o[k];an(d,f=>o[k]=a+(v-a)*f)};
+function rsz(){const r=cv.parentNode.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=Math.max(10,r.width*d);cv.height=Math.max(10,r.height*d);sc=Math.min(cv.width/1600,cv.height/900);ox=(cv.width-1600*sc)/2;oy=(cv.height-900*sc)/2}
+addEventListener('resize',rsz);
+const pt=e=>{const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;return{x:((e.clientX-r.left)*d-ox)/sc,y:((e.clientY-r.top)*d-oy)/sc}};
+cv.onpointerdown=e=>{if(!cur||!cur.dg)return;const p=pt(e);let b=null,bd=1e9;for(const o of cur.dg()){const d=H(o.x-p.x,o.y-p.y);if(d<o.r&&d<bd){b=o;bd=d}}if(b){dr=b;dr.ox=b.x-p.x;dr.oy=b.y-p.y;try{cv.setPointerCapture(e.pointerId)}catch(x){}bp(520,.05)}};
+cv.onpointermove=e=>{if(dr){const p=pt(e);dr.mv(p.x+dr.ox,p.y+dr.oy)}};
+cv.onpointerup=cv.onpointercancel=()=>{if(dr&&dr.up)dr.up();dr=null};
+function loop(t){const dt=Math.min(.05,(t-lt)/1e3||0);lt=t;if(cur&&!$('#lab').hidden){const k=dt*S.spd*(slow?.4:1);if(!pa){cur.up(k);A=A.filter(a=>{a.t+=k;a.f(Math.min(1,a.t/a.d));return a.t<a.d});if(auto&&(at-=dt)<=0)nx()}cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,cv.width,cv.height);cx.setTransform(sc,0,0,sc,ox,oy);cx.save();cx.beginPath();cx.rect(0,0,1600,900);cx.clip();bg(cx);cur.dr(cx);cx.restore()}requestAnimationFrame(loop)}
+function msg(t){curMsg=t;const m=$('#msg');m.hidden=!t||!S.exp;m.textContent=t;$('#exp').innerHTML=t&&S.exp?'<b>🔬 Түсіндірме:</b><br>'+t:''}
+function nx(){if(!cur.st)return;if(sti>=cur.st.length){auto=0;sti=0;rev=1;bp(880,.3);upBtn();return}const s=cur.st[sti++];msg(s[0]);s[1]();bp(600,.1);at=5/S.spd}
+function rst(){A=[];rev=0;sti=0;auto=0;msg('');cur.rs();upBtn();bp(400,.1)}
+const stA=()=>{rst();auto=1;at=.4;bp(700,.2);upBtn()};
+function B(t,f,k){const b=E('button',k,t);b.onclick=()=>{bp(660,.06);f(b)};C.append(b);return b}
+function SL(t,a,b,v,f){const d=E('div','sl','<span>'+t+'</span>'),i=E('input');i.type='range';i.min=a;i.max=b;i.value=v;i.oninput=()=>f(+i.value);d.append(i);C.append(d);return i}
+function G(its,f,s=0){const bs=its.map((t,i)=>B(t,()=>{bs.forEach(x=>x.classList.remove('on'));bs[i].classList.add('on');f(i)}));bs[s].classList.add('on');return bs}
+function pstep(P,px,L,a,dt){for(let i=0;i<2;i++){const p=P[i];p.om+=(-(980/L)*Math.sin(p.th)+a[i]/L*Math.cos(p.th)-2.2*p.om)*dt;p.th=cl(p.th+p.om*dt,-1.1,1.1)}const x=i=>px[i]+L*Math.sin(P[i].th);let n=0;while(x(1)-x(0)<72&&n++<90){P[0].th-=.01;P[1].th+=.01;P[0].om=P[1].om=0}}
+function ES(c,x,y,s,ang,ps,ls,sh,stc){c.save();c.translate(x,y);c.scale(s,s);
+rr(c,-130,220,260,340,46,'#cfe9ff55','#9fd0f255');rr(c,-46,160,92,70,10,'#cfe9ff66','#9fd0f255');
+c.fillStyle='#b9bec6';c.fillRect(-6,10,12,410);rr(c,-48,160,96,28,6,'#a9753f','#7a4f25');ball(c,0,420,12,'#9aa3ad');
+for(const d of[-1,1]){c.save();c.translate(0,420);c.rotate(d*ang*Math.PI/180);c.lineCap='round';c.lineWidth=12;c.strokeStyle='#d8b95a';c.beginPath();c.moveTo(0,0);c.lineTo(0,110);c.stroke();c.restore()}
+c.beginPath();c.ellipse(0,0,78,18,0,0,7);const g=c.createLinearGradient(-78,0,78,0);g.addColorStop(0,'#8a949f');g.addColorStop(.4,'#f2f5f8');g.addColorStop(1,'#7f8995');c.fillStyle=g;c.fill();c.strokeStyle='#10254a66';c.lineWidth=2;c.stroke();
+if(sh){if(ps)for(const q of[-48,0,48])ch(c,q,-2,ps,10);if(ls)for(const d of[-1,1]){const a=d*ang*Math.PI/180;for(const l of[70,105])ch(c,-Math.sin(a)*l,420+Math.cos(a)*l,ls,10)}}
+if(stc){c.font='bold 26px system-ui';const L=[['Металл табақша',60,-4,300,-50],['Металл шыбық',6,120,300,120],['Оқшаулағыш тығын',48,174,300,200],['Шыны колба',130,420,300,330],['Металл тілшелер',20,500,300,520]];L.forEach(l=>{c.strokeStyle='#F4B400';c.lineWidth=3;c.beginPath();c.moveTo(l[1],l[2]);c.lineTo(l[3],l[4]);c.stroke();tx(c,l[0],l[3]+8,l[4],26,'#10254A','left')})}
+c.restore()}
+/* ============== LABS ============== */
+const LABS=[];
+LABS.push((()=>{let bi=0,q=0,p={x:800,y:260},bits=[];
+const BD=[['Янтарь','#E0A030',-1],['Пластмасса тарақ','#3b82f6',-1],['Эбонит таяқша','#222c3a',-1],['Шыны таяқша','#bfe6f5',1]],K={x:150,y:560,w:300,h:190};
+const clo=()=>bi==3?['Жібек','#e9b8d8']:['Жүн','#c9a27a'];
+function rub(dx,dy){if(p.x>K.x&&p.x<K.x+K.w&&p.y>K.y-40&&p.y<K.y+K.h+40){const o=q;q=Math.min(1,q+H(dx,dy)*.0012);if(((q*20)|0)!=((o*20)|0))bp(180+q*200,.05,'triangle',.03)}}
+const doRub=()=>an(2.4,f=>{const n=K.x+150+Math.sin(f*38)*110;rub(n-p.x,0);p.x=n;p.y=K.y+90}),apr=()=>{tw(p,'x',1050,1.4);tw(p,'y',620,1.4)};
+return{t:'Электрлену құбылысы',d:'Үйкелген денелер жеңіл заттарды тартады',i:'🟡',q:'Үйкеуге дейін де, кейін де денені қағаз қиындыларына жақындатсақ, не болады?',
+c:'Үйкелген денелер электрленіп, жеңіл заттарды өзіне тарта алады. Грек тіліндегі «электрон» сөзі — янтарь.',
+st:[['Дене электрлік бейтарап: қағаздар қозғалмайды.',()=>{q=0;tw(p,'x',1000,1);tw(p,'y',680,1)}],['Денені матаға үйкейміз: электрлену деңгейі артады.',doRub],['Электрленген денені қағаздарға жақындатамыз: қағаздар тартылады.',apr]],
+ui(){G(BD.map(b=>b[0]),i=>{bi=i;q=0},bi);B('Үйкеу',doRub);B('Қағазға жақындату',apr)},
+rs(){q=0;p={x:800,y:260};bits=[];for(let i=0;i<16;i++)bits.push({x:900+i*38,y:800,vx:0,vy:0,r:i*.7})},
+up(dt){bits.forEach(b=>{const dx=p.x-b.x,dy=p.y+30-b.y,d=H(dx,dy)+1;if(q>.1){const a=q*4e7/(d*d+9000);b.vx+=dx/d*a*dt;b.vy+=dy/d*a*dt}b.vy+=900*dt;b.vx*=1-3*dt;b.vy*=1-1.2*dt;b.x=cl(b.x+b.vx*dt,20,1580);b.y+=b.vy*dt;if(b.y>800){b.y=800;b.vy=0;b.vx*=.8}})},
+dr(c){const o=clo();rr(c,K.x,K.y,K.w,K.h,26,o[1],'#fff');tx(c,o[0]+' мата',K.x+K.w/2,K.y+K.h/2,32);tx(c,'Қағаз қиындылары',1200,860,24);
+bits.forEach(b=>{c.save();c.translate(b.x,b.y);c.rotate(b.r);c.fillStyle='#F4B400';c.fillRect(-10,-4,20,8);c.restore()});
+c.save();c.translate(p.x,p.y);rr(c,-130,-22,260,44,22,BD[bi][1],'#10254a');if(S.chg)for(let i=0;i<R(q*7);i++)ch(c,-105+i*35,0,BD[bi][2],11);c.restore();tx(c,BD[bi][0]+' (сүйреңіз)',p.x,p.y-52,26)},
+dg(){return[{x:p.x,y:p.y,r:150,mv(x,y){const dx=x-p.x,dy=y-p.y;p.x=cl(x,150,1450);p.y=cl(y,90,780);rub(dx,dy)}}]},
+inf(){return'<b>'+BD[bi][0]+'</b><br>'+(q<.05?'Күйі: бейтарап':'Күйі: электрленген')+bar(q,'#F4B400')+'Электрлену деңгейі: '+R(q*100)+'%<br><small>Қағаздар: тартылыс '+(q>.1?'байқалады':'жоқ')+'</small>'}}})());
+
+LABS.push((()=>{let ex=0,f=0,q=0,ph=0,rb=0,sl;
+const X=[[['Эбонит таяқша','#2b3442'],['Жібек мата','#e8b4d8'],1],[['Шыны таяқша','#bfe6f5'],['Қағаз','#f3efe0'],0]];
+const SL5=(bx,by,i,n)=>({x:bx+50+(i%5)*85,y:by+75+((i/5)|0)*95});
+return{t:'Үйкеліс арқылы электрлену',d:'Электрондар бір денеден екінші денеге ауысады',i:'🔴',q:'Эбонитті жібекке үйкегенде электрондар қайда ауысады?',
+c:'Электрон жоғалтқан дене оң, ал электрон қабылдаған дене теріс зарядталады.',
+st:[['Екі дене де бейтарап: оң және теріс зарядтар теңгерілген.',()=>{f=0;sl.value=0}],['Микроәлемді қараймыз. Үйкеліс 50%: электрондар донордан қабылдаушыға ауысады.',()=>{S.mic=1;f=50;sl.value=50}],['Үйкеліс 100%: заряд шекті мәнге жетеді, протондар орнында қалады.',()=>{f=100;sl.value=100}]],
+ui(){G(['А: эбонит + жібек','Ә: шыны + қағаз'],i=>{ex=i;q=0;f=0;sl.value=0},ex);sl=SL('Үйкеліс деңгейі: 0–100%',0,100,0,v=>f=v);B('Үйкеу',()=>{f=Math.min(100,f+25);sl.value=f;an(1.6,k=>rb=Math.sin(k*40)*36*(1-k))});B('Микроәлем',b=>{S.mic=!S.mic;sv()})},
+rs(){f=0;q=0;if(sl)sl.value=0},
+up(dt){const t=f/20;ph+=Math.abs(t-q)>.03?dt*1.2:0;q+=(t-q)*Math.min(1,dt*3)},
+dr(c){const d=X[ex][2],n=R(q),mv=Math.abs(f/20-q)>.03;
+for(let b=0;b<2;b++){const bx=b?950:200,by=250+(mv&&b==0?rb:0),acc=b!=d;rr(c,bx,by,450,350,34,X[ex][b][1],'#ffffffcc');tx(c,X[ex][b][0],bx+225,by-26,28);
+if(S.mic){const ne=8+(acc?n:-n);for(let i=0;i<8;i++){const s=SL5(bx,by,i);ch(c,s.x,s.y,1,15)}for(let i=0;i<ne;i++){const s=SL5(bx,by,i);ch(c,s.x+40,s.y+34,-1,13)}}
+else if(S.chg){for(let i=0;i<n;i++)ch(c,bx+60+i*60,by+175,acc?-1:1,20)}
+tx(c,(n==0?'0':(acc?'−':'+')+n)+' шартты бірлік',bx+225,by+390,30,n==0?'#64748b':acc?'#2563EB':'#E53935')}
+if(S.mic&&mv)for(let j=0;j<3;j++){const t=(ph+j/3)%1,a=d?1:0;const x0=a?950:650,x1=a?650:950;ch(c,x0+(x1-x0)*t,430-Math.sin(t*3.14)*70,-1,13)}
+tx(c,'Электрондар: '+(d?'жібектен эбонитке':'шыныдан қағазға')+' →',800,700,26)},
+inf(){const n=R(q),d=X[ex][2];const a=X[ex][d?0:1][0],b=X[ex][d?1:0][0];return'<b>'+a+':</b> '+(n?'−'+n:'0')+'<br><b>'+b+':</b> '+(n?'+'+n:'0')+'<hr>Жүйенің қорытқы заряды: <b>0</b><br><small>Шартты бірліктер (кулонмен өлшенген мән емес)</small>'}}})());
+
+LABS.push((()=>{let sa=1,sb=-1,m=5,dist=450,P=[{th:0,om:0},{th:0,om:0}],bu=[];const L=430,py=140,px=()=>[800-dist/2,800+dist/2],bx=i=>px()[i]+L*Math.sin(P[i].th);
+function acc(){const d=Math.max(150,bx(1)-bx(0)),k=(300/d)**2;let a=0,rep=0;if(sa&&sb){a=Math.min(1300,700*(m/5)**2*k);rep=sa*sb>0}else if(sa||sb)a=.4*700*(m/5)*k;return[rep?-a:a,rep?a:-a]}
+const set=(a,b)=>{sa=a;sb=b;bu.forEach((x,i)=>x.classList.toggle('on',i==(a==1?0:a==-1?1:2)||i==(b==1?3:b==-1?4:5)))};
+return{t:'Зарядтардың әрекеттесуі',d:'Аттас зарядтар тебіледі, әр аттас зарядтар тартылады',i:'⚖️',q:'Екі оң зарядталған цилиндр бір-біріне қалай әсер етеді? Ал оң және теріс ше?',
+c:'Аттас зарядтар тебіледі, әр аттас зарядтар тартылады.',
+st:[['Екі бейтарап цилиндр: ауытқу жоқ.',()=>set(0,0)],['Оң және оң: тебіледі.',()=>set(1,1)],['Теріс және теріс: тебіледі.',()=>set(-1,-1)],['Оң және теріс: тартылады.',()=>set(1,-1)],['Зарядталған және бейтарап өткізгіш: индукция әсерінен тартылады.',()=>set(1,0)]],
+ui(){bu=[];const l=['1: оң (+)','1: теріс (−)','1: бейтарап (0)','2: оң (+)','2: теріс (−)','2: бейтарап (0)'];l.forEach((t,i)=>bu.push(B(t,()=>{i<3?set([1,-1,0][i],sb):set(sa,[1,-1,0][i-3])})));set(sa,sb);SL('Заряд мөлшері',1,10,m,v=>m=v);SL('Бастапқы арақашықтық',300,700,dist,v=>dist=v)},
+rs(){P=[{th:0,om:0},{th:0,om:0}];m=5;set(1,-1)},
+up(dt){pstep(P,px(),L,acc(),dt)},
+dr(c){const p=px();rr(c,230,130,1140,24,8,'#9aa8b8','#6b7a8c');rr(c,240,130,28,690,6,'#9aa8b8','#6b7a8c');rr(c,1332,130,28,690,6,'#9aa8b8','#6b7a8c');rr(c,180,810,1240,30,10,'#8794a6','#5f6e82');
+const a=acc(),S0=[sa,sb];for(let i=0;i<2;i++){c.save();c.translate(p[i],py);c.rotate(-P[i].th);c.strokeStyle='#445';c.lineWidth=3;c.beginPath();c.moveTo(0,0);c.lineTo(0,L);c.stroke();rr(c,-30,L,60,115,14,'#e6ebf1','#9aa7b6');
+if(S.chg){const s=S0[i];if(s)ch(c,0,L+57,s,20);else if(S0[1-i]){const near=i==0?1:-1,o=-S0[1-i];ch(c,near*14,L+57,o,13);ch(c,-near*14,L+57,-o,13)}else tx(c,'0',0,L+57,28,'#64748b')}c.restore();
+if(S.frc&&Math.abs(a[i])>1){const x=bx(i),y=py+L*Math.cos(P[i].th)+57;ar(c,x,y,x+cl(a[i]/5,-170,170),y,'#F4B400')}}
+tx(c,'Жіптер штативтен ажырамайды',800,870,22)},
+inf(){const t=(sa&&sb)?(sa*sb>0?'тебіледі':'тартылады'):(sa||sb)?'индукция әсерінен тартылады':'әсер жоқ';return'1-цилиндр: <b>'+sg2(sa)+'</b><br>2-цилиндр: <b>'+sg2(sb)+'</b><hr>Күй: <b>'+t+'</b><br>Заряд мөлшері (шартты): '+m}}})());
+
+LABS.push((()=>{let sg=-1,r={x:250},s=0;const N=[];for(let i=0;i<16;i++){const a=i*2.4,d=Math.sqrt((i+.5)/16)*135;N.push({x:Math.cos(a)*d,y:Math.sin(a)*d})}
+const prox=()=>cl(1-(720-r.x-45)/450,0,1);
+return{t:'Электростатикалық индукция',d:'Өткізгіштегі зарядтардың қайта бөлінуі',i:'🔵',q:'Теріс зарядталған таяқшаны металл шарға тигізбей жақындатсақ, не болады?',
+c:'Сыртқы электр өрісінің әсерінен өткізгіштегі электр зарядтары қайта бөлінеді. Бұл электростатикалық индукция деп аталады.',
+st:[['Шар электрлік бейтарап.',()=>{r.x=250;S.chg=0}],['Зарядтарды көрсетеміз: оң және теріс зарядтар теңгерілген.',()=>S.chg=1],['Теріс таяқшаны жақындатамыз: еркін электрондар алыс бөлікке ығысады.',()=>{sg=-1;tw(r,'x',670,2)}],['Таяқшаны алыстатамыз: заряд біркелкі таралады.',()=>tw(r,'x',250,2)],['Оң таяқша: электрондар таяқшаға қарай ығысады.',()=>{sg=1;tw(r,'x',670,2)}]],
+ui(){G(['Оң зарядталған таяқша','Теріс зарядталған таяқша'],i=>sg=i?-1:1,1);SL('Арақашықтық (таяқша ↔ шар)',45,470,470-(r.x-250)*1.1,v=>r.x=cl(675-(v-45),250,675));B('Электр өрісі',b=>{S.frc=!S.frc;sv()});B('Таяқшаны алыстату',()=>tw(r,'x',250,1.2))},
+rs(){r.x=250;s=0;S.chg=0},up(dt){s+=(prox()-s)*Math.min(1,dt*6)},
+dr(c){rr(c,880,620,40,150,8,'#bfe3ff','#8cc3ee');rr(c,820,760,160,24,10,'#9fb8d0','#7a93ad');tx(c,'Оқшаулағыш тұғыр',900,810,22);
+ball(c,900,450,180,'#c3cfdc');
+if(S.chg){c.save();c.beginPath();c.arc(900,450,178,0,7);c.clip();const dx=-sg*s*85;N.forEach(n=>{ch(c,900+n.x,450+n.y,1,11);ch(c,900+n.x+16+dx,450+n.y+14,-1,11)});c.restore();if(s>.1)ar(c,900+sg*60,225,900-sg*60,225,'#2563EB')}else tx(c,'«Зарядтарды көрсету» батырмасын басыңыз',800,870,26,'#64748b');
+if(S.frc){const d=sg;for(const y of[390,450,510])ar(c,d<0?r.x+170:r.x+20,y,d<0?r.x+20:r.x+170,y,'#00A6C788')}
+rr(c,r.x-400,432,400,36,18,sg>0?'#bfe6f5':'#222c3a','#10254a');if(S.chg)for(let i=0;i<5;i++)ch(c,r.x-60-i*60,450,sg,11);tx(c,'Зарядталған таяқша (сүйреңіз)',r.x-200,400,24)},
+dg(){return[{x:r.x-200,y:450,r:240,mv(x){r.x=cl(x+200,250,675)}}]},
+inf(){let t='Таяқша: <b>'+(sg>0?'оң':'теріс')+'</b><br>Шардың қорытқы заряды: <b>q = 0</b>';if(S.chg&&s>.1){const n=sg<0?'+':'−',f=sg<0?'−':'+';t+='<hr>Жақын бөлік: <b>'+n+'</b><br>Алыс бөлік: <b>'+f+'</b>'}else if(!S.chg)t+='<hr>Зарядтар жасырын';return t+'<br><small>Жанасу жоқ, электрон ауа арқылы өтпейді</small>'}}})());
+
+LABS.push((()=>{let sg=1,Q=0,mode=0,an_=0,t={x:380,y:240},st=0,tc=0;const PC={x:800,y:230};
+const pr=()=>cl(1-(H(t.x-PC.x,t.y-PC.y)-95)/450,0,1),sl=()=>Q*55+sg*pr()*40;
+function chk(){const d=H(t.x-PC.x,t.y-PC.y);if(mode==0&&d<95){t.x=PC.x+(t.x-PC.x)/d*95;t.y=PC.y+(t.y-PC.y)/d*95}if(mode==1&&d<100){if(!tc){Q=cl(Q+sg*.85,-1,1);tc=1;bp(300,.3)}}else if(d>140)tc=0}
+const go=(x,y,d=1.6)=>{tw(t,'x',x,d);tw(t,'y',y,d);an(d,chk)};
+return{t:'Электроскоп',d:'Индукция және жанастыру арқылы зарядтау',i:'🧪',q:'Оң зарядталған таяқшаны табақшаға тигізбей жақындатсақ, тілшелерге не болады?',
+c:'Электроскоп тілшелері аттас зарядтардың тебілуінен ашылады. Индукцияда толық заряд нөл, жанастыруда электроскоп заряд алады.',
+st:[['Индукция: оң таяқшаны жақындатамыз — электрондар табақшаға ығысады, тілшелерде оң заряд басым болып ашылады.',()=>{S.chg=1;mode=0;sg=1;go(PC.x-150,PC.y)}],['Таяқшаны алыстатамыз — тілшелер жабылады, толық заряд нөл болды.',()=>go(380,240)],['Теріс таяқша: электрондар тілшелерге ығысады, тілшелер теріс зарядтан ашылады.',()=>{sg=-1;go(PC.x-150,PC.y)}],['Жанастыру режимі: теріс таяқшаны табақшаға тигіземіз.',()=>{mode=1;go(PC.x-90,PC.y)}],['Таяқшаны алыстатамыз: тілшелер ашық қалады — электроскоп заряд алды.',()=>go(380,240)]],
+ui(){G(['Оң зарядталған таяқша','Теріс зарядталған таяқша'],i=>sg=i?-1:1,0);G(['Индукция','Жанастыру'],i=>{mode=i;tc=0},0);B('Құрылысын көрсету',b=>st=!st);B('Зарядсыздандыру',()=>Q=0)},
+rs(){Q=0;t={x:380,y:240};mode=0;tc=0;an_=0;st=0;S.chg=0},up(dt){const a=Math.min(70,Math.abs(sl()));an_+=(a-an_)*Math.min(1,dt*8)},
+dr(c){const p=pr(),ind=p*40>Math.abs(Q)*55;let ps=0,ls=0;if(p>.12&&ind){ps=-sg;ls=sg}else if(Math.abs(Q)>.05){ps=ls=sgn(Q)}
+ES(c,PC.x,PC.y,1,an_,ps,ls,S.chg,st);rr(c,t.x-400,t.y-18,400,36,18,sg>0?'#bfe6f5':'#222c3a','#10254a');if(S.chg)for(let i=0;i<5;i++)ch(c,t.x-50-i*55,t.y,sg,11);tx(c,'Таяқша (сүйреңіз)',t.x-200,t.y-48,24);
+if(!S.chg)tx(c,'«Зарядтарды көрсету» батырмасын басыңыз',1200,860,22,'#64748b')},
+dg(){return[{x:t.x-200,y:t.y,r:230,mv(x,y){t.x=cl(x+200,200,1450);t.y=cl(y,130,780);chk()}}]},
+inf(){return'Таяқша: <b>'+(sg>0?'оң':'теріс')+'</b>, режим: <b>'+(mode?'жанастыру':'индукция')+'</b><br>Тілшелердің ашылуы:'+bar(an_/70,'#00A6C7')+'≈ '+R(an_)+'° <small>(шартты көрсеткіш)</small><hr>Электроскоптың толық заряды: <b>'+(Math.abs(Q)<.05?'0':(Q>0?'+':'−')+' (жанастырудан)')+'</b>'}}})());
+
+LABS.push((()=>{let e=6,busy=0,fly=null,a1=0;const NU=[];for(let i=0;i<12;i++){const a=i*2.4,d=14*Math.sqrt(i+.5);NU.push({x:Math.cos(a)*d,y:Math.sin(a)*d,p:i%2==0})}
+const pos=(s,i,n)=>{const r=s?250:140,a=(s?-a1*.6:a1)+i*Math.PI*2/n;return{x:800+r*Math.cos(a),y:450+r*Math.sin(a)}};
+function add(){if(busy||e>=7)return;busy=1;const to=pos(1,0,e-1);fly={x:1500,y:100,o:1};const sx=1500,sy=100;an(1.3,f=>{fly.x=sx+(to.x-sx)*f;fly.y=sy+(to.y-sy)*f;if(f>=1){fly=null;e++;busy=0;bp(520,.2)}})}
+function rem(){if(busy||e<=5)return;busy=1;const n=e-2,p=pos(1,0,n);e--;fly={x:p.x,y:p.y,o:1};const sx=p.x,sy=p.y;an(1.3,f=>{fly.x=sx+(1500-sx)*f;fly.y=sy+(100-sy)*f;fly.o=1-f;if(f>=1){fly=null;busy=0}})}
+return{t:'Атом зертханасы',d:'Көміртек-12: протон, нейтрон, электрон',i:'⚛️',q:'Бейтарап атомнан бір электронды алып тастасақ, атом қандай зарядқа ие болады?',
+c:'Бейтарап атомдағы оң және теріс зарядтар теңгерілген. Электрондар саны өзгергенде атом ионға айналады.',
+st:[['Бейтарап көміртек атомы: 6 протон, 6 нейтрон, 6 электрон.',()=>{}],['Бір электронды аламыз: электрон 5 болды — оң ион.',rem],['Бейтарап күйге қайтарамыз.',()=>{an(.1,f=>{if(f>=1&&e<6)add()})}],['Бір электрон қосамыз: электрон 7 болды — теріс ион.',()=>setTimeout(add,2200)]],
+ui(){B('Электрон қосу',add);B('Электронды алу',rem);B('Бейтарап күйге қайтару',()=>{if(e==5)add();else if(e==7)rem()})},
+rs(){e=6;busy=0;fly=null},up(dt){a1+=dt*.7},
+dr(c){for(const r of[140,250]){c.setLineDash([10,10]);c.strokeStyle='#94A3B8';c.lineWidth=2;c.beginPath();c.arc(800,450,r,0,7);c.stroke()}c.setLineDash([]);
+NU.forEach(n=>ball(c,800+n.x,450+n.y,17,n.p?'#E53935':'#94A3B8'));NU.forEach(n=>{if(n.p)tx(c,'+',800+n.x,450+n.y,22,'#fff')});
+const n2=e-2;for(let i=0;i<2;i++){const p=pos(0,i,2);ch(c,p.x,p.y,-1,17)}for(let i=0;i<n2;i++){const p=pos(1,i,n2);ch(c,p.x,p.y,-1,17)}
+if(fly){c.globalAlpha=fly.o;ch(c,fly.x,fly.y,-1,17);c.globalAlpha=1}
+tx(c,'Шартты оқу моделі: нақты электрон траекториясы емес',800,870,24,'#475569');tx(c,'1-қабат: 2 электрон',800,450-175,22,'#64748b');tx(c,'2-қабат: '+n2+' электрон',800,450-285,22,'#64748b')},
+inf(){const q=6-e,col=q>0?'#E53935':q<0?'#2563EB':'#16A34A',k=q>0?'оң ион':q<0?'теріс ион':'бейтарап атом';return'<div style="border:4px solid '+col+';background:'+col+'1f;border-radius:12px;padding:8px">Протон: <b>6</b><br>Нейтрон: <b>6</b><br>Электрон: <b>'+e+'</b><br>Қорытқы заряд: <b>'+(q>0?'+e':q<0?'−e':'0')+'</b><br>Күйі: <b>'+k+'</b></div>'}}})());
+
+LABS.push((()=>{let qA=0,qB=0,mat=null,con=0,rod={x:800,y:730},ph=0,bs=[];const PA={x:470,y:290},PB={x:1130,y:290},s=.85;
+const M=[['Мыс','#c8794a',1.6,1],['Алюминий','#cfd6dd',1.3,1],['Темір','#7d8793',.8,1],['Графит','#3b3f46',.5,1],['Шыны','#bfe6f5',0,0],['Резеңке','#444',0,0],['Фарфор','#f3f1ea',0,0],['Пластмасса','#6ab0e8',0,0],['Кварц','#e3d9f0',0,0]];
+const snap=()=>{if(mat!=null&&rod.y<450&&Math.abs(rod.x-800)<280){con=1;rod.x=800;rod.y=290;bp(440,.2)}};
+return{t:'Өткізгіштер мен диэлектриктер',d:'Екі электроскоп және әртүрлі материал шыбықтары',i:'🔌',q:'Теріс зарядталған электроскопты бейтарап электроскоппен мыс және шыны шыбықпен жалғасақ, не болады?',
+c:'Өткізгіштер зарядтардың тасымалдануына мүмкіндік береді. Диэлектриктерде еркін зарядтардың қозғалысы өте шектеулі.',
+st:[['1-электроскопты теріс зарядтаймыз.',()=>{qA=-1;qB=0;con=0}],['Мыс шыбықпен жалғаймыз: электрондар 1-ден 2-электроскопқа ауысады.',()=>{mat=0;con=1;rod={x:800,y:290}}],['Шыны шыбық (диэлектрик): 1-электроскоп зарядын сақтайды.',()=>{qA=-1;qB=0;mat=4;con=1}],['Оң заряд + мыс: электрондар 2-ден 1-электроскопқа қозғалады.',()=>{qA=1;qB=0;mat=0;con=1}]],
+ui(){B('1-электроскопты зарядтау (−)',()=>{qA=-1;qB=0});B('1-электроскопты зарядтау (+)',()=>{qA=1;qB=0});M.forEach((m,i)=>{if(i==0||i==4)C.append(E('b','',i?'Диэлектриктер':'Өткізгіштер'));bs[i]=B(m[0],()=>{mat=i;con=0;rod={x:800,y:730};bs.forEach((x,j)=>x.classList.toggle('on',j==i))})});B('Жалғау',()=>{if(mat!=null){con=1;rod={x:800,y:290}}});B('Ажырату',()=>{con=0;rod={x:800,y:730}});B('Шала өткізгіштер',()=>modal('<h2>Шала өткізгіштер</h2><div class="g3"><div><em>🔲</em><b>Кремний</b><br>Микросхемалар, смартфондар, күн батареялары</div><div><em>📱</em><b>Германий</b><br>Диодтар мен транзисторлар</div><div><em>☀️</em><b>Селен</b><br>Фотоэлементтер, күн батареялары</div></div><p>Шала өткізгіштердің электрөткізгіштігі материалдың күйіне, температурасына және қоспаларына тәуелді. Олар металл сияқты әрдайым жақсы өткізбейді.</p>'))},
+rs(){qA=0;qB=0;con=0;mat=null;rod={x:800,y:730};bs.forEach(x=>x&&x.classList.remove('on'))},
+up(dt){if(con&&mat!=null&&M[mat][3]){const d=(qA-qB)*M[mat][2]*dt*.5;qA-=d;qB+=d}ph+=dt*.8},
+dr(c){const fl=qA-qB;ES(c,PA.x,PA.y,s,Math.abs(qA)*55,qA?sgn(qA):0,qA?sgn(qA):0,1,0);ES(c,PB.x,PB.y,s,Math.abs(qB)*55,Math.abs(qB)>.03?sgn(qB):0,Math.abs(qB)>.03?sgn(qB):0,1,0);tx(c,'1-электроскоп',PA.x,830,28);tx(c,'2-электроскоп',PB.x,830,28);
+if(mat!=null){const m=M[mat];if(con)rr(c,540,PA.y-14,520,28,10,m[1],'#10254a');else rr(c,rod.x-260,rod.y-14,520,28,10,m[1],'#10254a');tx(c,m[0]+(m[3]?' (өткізгіш)':' (диэлектрик)'),800,con?230:rod.y-44,26);
+if(con&&m[3]&&Math.abs(fl)>.03){const d=fl<0?1:-1;for(let j=0;j<6;j++){const t=(ph+j/6)%1;ch(c,d>0?545+t*510:1055-t*510,PA.y,-1,11)}tx(c,'e⁻ → '+(d>0?'2-электроскопқа':'1-электроскопқа'),800,350,24,'#2563EB')}}
+else tx(c,'Материалды таңдаңыз және шыбықты екі табақшаның арасына сүйреңіз',800,640,24,'#64748b')},
+dg(){return mat==null?[]:[{x:rod.x,y:rod.y,r:200,mv(x,y){rod.x=cl(x,250,1350);rod.y=cl(y,200,800);con=0},up:snap}]},
+inf(){return'1-электроскоп: <b>'+(Math.abs(qA)<.03?'0':qA.toFixed(2))+'</b>'+bar(Math.abs(qA),qA>0?'#E53935':'#2563EB')+'2-электроскоп: <b>'+(Math.abs(qB)<.03?'0':qB.toFixed(2))+'</b>'+bar(Math.abs(qB),qB>0?'#E53935':'#2563EB')+'<small>Шартты бірліктер</small><hr>Шыбық: <b>'+(mat==null?'таңдалмаған':M[mat][0])+'</b>, '+(con?'жалғанған':'ажыратылған')}}})());
+
+LABS.push((()=>{let sub=0,q=0,dist=450,P=[{th:0,om:0},{th:0,om:0}],pa_=[],cb={x:1000,y:430},qc=0,bl={x:500,y:450,vy:0},qb=0,fast=0,stuck=0,ph=0,dgg=0,emt=0;const L=400,py=130,px=()=>[800-dist/2,800+dist/2];
+const FX=[['🎨','Электростатикалық бояу','Зарядталған бояу бөлшектері қарсы зарядталған бұйымға біркелкі жабысады.'],['🏭','Ауаны шаңнан тазарту','Шаң бөлшектері зарядталып, қарсы зарядталған пластиналарға тартылады.'],['🖨️','Лазерлік принтер','Зарядталған барабанға тонер бөлшектері тартылып, қағазға ауысады.'],['🌩️','Найзағай','Бұлттарда жиналған үлкен зарядтардың бөлінуі.'],['🔥','Статикалық ұшқыннан өрт','Жанғыш бу бар жерде статикалық разряд өрт тудыруы мүмкін.'],['💻','Электрондық құрылғылардың зақымдануы','Статикалық разряд микросхемаларды бұзуы мүмкін.']];
+const C3=['А: Шарлардың тебілуі','Ә: Су ағысының ауытқуы','Б: Шардың қабырғаға жабысуы'];
+function ui(){C.innerHTML='';G(C3,i=>{sub=i;ui();rsub()},sub);
+if(sub==0){B('Шарларды газетке үйкеу',()=>q=Math.min(1,q+.34));SL('Арақашықтық',300,700,dist,v=>dist=v)}
+if(sub==1){B('Сызғышты жүнге үйкеу',()=>qc=Math.min(1,qc+.34));B('Микроәлем (молекулалар)',()=>{S.mic=!S.mic;sv()})}
+if(sub==2){B('Шарды газетке үйкеу',()=>qb=Math.min(1,qb+.34));B('Уақытты жылдамдату',b=>{fast=!fast;b.classList.toggle('on',fast)})}
+B('Пайдалы және зиянды әсерлер',()=>modal('<h2>Электрленудің әсерлері</h2><h3 style="color:#16A34A">Пайдалы</h3><div class="g3">'+FX.slice(0,3).map(x=>'<div><em>'+x[0]+'</em><b>'+x[1]+'</b><br>'+x[2]+'</div>').join('')+'</div><h3 style="color:#E53935">Зиянды</h3><div class="g3">'+FX.slice(3).map(x=>'<div><em>'+x[0]+'</em><b>'+x[1]+'</b><br>'+x[2]+'</div>').join('')+'</div>'))}
+function rsub(){q=0;qc=0;qb=0;P=[{th:0,om:0},{th:0,om:0}];pa_=[];cb={x:1000,y:430};bl={x:500,y:450,vy:0};stuck=0;fast=0;dgg=0}
+return{t:'Электрлену күнделікті өмірде',d:'Шарлар, су ағысы, қабырға және әсерлері',i:'🎈',q:'Электрленген сызғышты су ағынына жақындатсақ, су ағыны қалай өзгереді?',
+c(){return['Бірдей зарядталған шарлар бір-бірінен тебіледі.','Электрленген дене су ағынын өзіне тартады (су молекулалары полярланады).','Электрленген шар қабырғаны полярландырып, оған жабысады. Заряд азайғанда шар түседі.'][sub]},
+st:[['А: шарларды газетке үйкеп, жіпке іліп қоямыз.',()=>{sub=0;ui();rsub();q=1}],['Ә: сызғышты жүнге үйкеп, су ағынына жақындатамыз.',()=>{sub=1;ui();rsub();qc=1;tw(cb,'x',520,2)}],['Б: шарды газетке үйкеп, қабырғаға жақындатамыз.',()=>{sub=2;ui();rsub();qb=1;tw(bl,'x',1230,2)}]],
+ui,rs(){rsub()},
+up(dt){ph+=dt;if(sub==0)pstep(P,px(),L,(()=>{const d=Math.max(150,px()[1]+L*Math.sin(P[1].th)-px()[0]-L*Math.sin(P[0].th)),a=Math.min(1300,900*q*q*(300/d)**2);return[-a,a]})(),dt);
+if(sub==1){emt+=120*dt;while(emt>1){emt--;pa_.push({x:455+Math.random()*8,y:150,vx:0,vy:200})}pa_.forEach(p=>{const dx=cb.x-p.x,dy=cb.y-p.y,d=H(dx,dy)+1;p.vx+=qc*3.2e7/(d*d+20000)*dx/d*dt;p.vx*=1-.5*dt;p.vy+=900*dt;p.x+=p.vx*dt;p.y+=p.vy*dt});pa_=pa_.filter(p=>p.y<850&&p.x>0&&p.x<1600)}
+if(sub==2){qb=Math.max(0,qb-dt*(fast?.28:.01));if(!dgg){const near=bl.x>=1300-62-8;stuck=near&&qb>.2;if(!stuck){bl.vy+=500*dt;bl.y+=bl.vy*dt;if(bl.y>760){bl.y=760;bl.vy=0}}else bl.vy=0}}},
+dr(c){if(sub==0){const p=px();rr(c,230,120,1140,22,8,'#9aa8b8','#6b7a8c');rr(c,240,120,26,700,6,'#9aa8b8','#6b7a8c');rr(c,1334,120,26,700,6,'#9aa8b8','#6b7a8c');rr(c,150,810,260,50,6,'#f3efe0','#d9d2b8');tx(c,'Газет',280,835,26);
+for(let i=0;i<2;i++){c.save();c.translate(p[i],py);c.rotate(-P[i].th);c.strokeStyle='#445';c.lineWidth=3;c.beginPath();c.moveTo(0,0);c.lineTo(0,L);c.stroke();c.fillStyle=i?'#00A6C7':'#F4B400';c.beginPath();c.ellipse(0,L+70,56,72,0,0,7);c.fill();ball(c,0,L+70,60,i?'#00A6C7':'#F4B400');if(S.chg&&q>.05)for(let k=0;k<R(q*3);k++)ch(c,-22+k*22,L+70,-1,11);c.restore()}tx(c,'Шарлардың заряды: '+(q>.05?'теріс':'бейтарап'),800,870,26)}
+if(sub==1){rr(c,350,60,160,60,12,'#9fb8d0','#6b829c');rr(c,440,115,30,40,6,'#9fb8d0','#6b829c');tx(c,'Кран',430,90,26);c.fillStyle='#38bdf8';pa_.forEach(p=>{c.beginPath();c.arc(p.x,p.y,5,0,7);c.fill()});
+if(S.mic)for(let i=0;i<pa_.length;i+=18){const p=pa_[i];c.save();c.translate(p.x,p.y);c.rotate(qc>.1?Math.PI*(1-cl(qc,0,1))*(cb.x>p.x?0:1):0);c.fillStyle='#E53935';c.beginPath();c.arc(-12,0,9,0,7);c.fill();c.fillStyle='#2563EB';c.beginPath();c.arc(12,0,9,0,7);c.fill();c.restore()}
+rr(c,cb.x-130,cb.y-22,260,44,14,'#6ab0e8','#2f7fc9');if(S.chg)for(let i=0;i<R(qc*6);i++)ch(c,cb.x-100+i*40,cb.y,-1,11);tx(c,'Сызғыш (сүйреңіз)',cb.x,cb.y-48,24);tx(c,'Су ағысы',460,820,24)}
+if(sub==2){c.fillStyle='#e9d8c4';c.fillRect(1300,0,300,830);c.strokeStyle='#cbb79e';c.lineWidth=2;for(let y=0;y<830;y+=60){c.beginPath();c.moveTo(1300,y);c.lineTo(1600,y);c.stroke()}tx(c,'Қабырға',1450,860,26);
+if(S.chg&&qb>.1)for(let k=0;k<R(qb*5);k++){ch(c,1316,bl.y-80+k*40,1,11);ch(c,1390,bl.y-80+k*40,-1,11)}
+ball(c,bl.x,bl.y,62,'#F4B400');c.strokeStyle='#445';c.beginPath();c.moveTo(bl.x,bl.y+62);c.lineTo(bl.x+8,bl.y+110);c.stroke();if(S.chg)for(let k=0;k<R(qb*3);k++)ch(c,bl.x-20+k*22,bl.y,-1,11);tx(c,stuck?'Шар жабысып тұр':'Шарды қабырғаға жақындатыңыз',700,860,26)}},
+dg(){if(sub==1)return[{x:cb.x,y:cb.y,r:160,mv(x,y){cb.x=cl(x,500,1500);cb.y=cl(y,200,700)}}];if(sub==2)return[{x:bl.x,y:bl.y,r:110,mv(x,y){dgg=1;stuck=0;bl.x=cl(x,100,1230);bl.y=cl(y,100,760);bl.vy=0},up(){dgg=0}}];return[]},
+inf(){const v=[q,qc,qb][sub];return'<b>'+C3[sub]+'</b><br>Электрлену деңгейі:'+bar(v,'#F4B400')+(sub==2?(stuck?'Шар қабырғаға жабысқан':'Шар жабыспаған'):'')+'<br><small>Шартты көрсеткіш</small>'}}})());
+/* ============== UI ============== */
+function modal(h){$('#mb').innerHTML=h+'<p><button onclick="$(\'#md\').hidden=1" style="background:var(--ng);color:#fff;width:100%">Жабу</button></p>';$('#md').hidden=0}
+const fs=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+function openLab(i){ci=(i+8)%8;cur=LABS[ci];$('#home').hidden=1;$('#lab').hidden=0;C.innerHTML='';pa=0;slow=0;A=[];rev=0;sti=0;auto=0;cur.rs();cur.ui();msg('');$('#ti').textContent=cur.t;$('#no').textContent='№'+(ci+1)+' / 8';$('#qq').textContent=cur.q;setTimeout(rsz,30);upBtn()}
+function home(){$('#lab').hidden=1;$('#home').hidden=0;auto=0}
+const BT=[['▶ Тәжірибені бастау',stA],['Тоқтату',()=>{pa=!pa;upBtn()}],['Қадам бойынша көрсету',()=>{auto=0;nx()}],['Баяу қозғалыс',()=>{slow=!slow;upBtn()}],['Зарядтарды көрсету',()=>{S.chg=!S.chg;sv();upBtn()}],['Қорытындыны ашу',()=>{rev=1;upBtn()}],['Қайта бастау',rst]];
+BT.forEach((b,i)=>{const e=E('button','',b[0]);e.onclick=()=>{bp(660,.06);b[1]()};$('#bt').append(e)});
+function upBtn(){const b=$('#bt').children;b[1].textContent=pa?'Жалғастыру':'Тоқтату';b[1].classList.toggle('on',!!pa);b[3].classList.toggle('on',!!slow);b[4].classList.toggle('on',!!S.chg);b[0].classList.toggle('on',!!auto)}
+setInterval(()=>{if(!cur||$('#lab').hidden)return;$('#inf').innerHTML=cur.inf();const c=typeof cur.c=='function'?cur.c():cur.c;$('#cc').innerHTML=rev?'<b style="color:var(--ok)">✔ Қорытынды:</b><br>'+c:'<b>Қорытынды:</b> <i>жасырын</i>';$('#bt').children[4].classList.toggle('on',!!S.chg)},150);
+$('#bm').onclick=home;$('#bpv').onclick=()=>openLab(ci-1);$('#bnx').onclick=()=>openLab(ci+1);$('#bfs').onclick=fs;
+$('#bhp').onclick=()=>{$('#lab').classList.add('full');$('#ex').hidden=0;rsz();setTimeout(rsz,50)};$('#ex').onclick=()=>{$('#lab').classList.remove('full');$('#ex').hidden=1;setTimeout(rsz,50)};
+const grid=$('#grid');LABS.forEach((l,i)=>{const d=E('div','cd','<div class="ic">'+l.i+'</div><h3>'+(i+1)+'. '+l.t+'</h3><span>'+l.d+'</span><button>Зертхананы ашу</button>');d.onclick=()=>{bp(660,.08);d.animate([{transform:'scale(1)'},{transform:'scale(1.07)'},{transform:'scale(.95)',opacity:.5}],{duration:260}).onfinish=()=>openLab(i)};grid.append(d)});
+grid.append((()=>{const d=E('div','cd','<div class="ic">🧰</div><h3>8. Қосымша тәжірибелер</h3><span>Шарлар, су ағысы, қабырға, пайдалы және зиянды әсерлер</span><button>Зертхананы ашу</button>');d.onclick=()=>openLab(7);return d})());
+grid.removeChild(grid.children[7]);grid.children[grid.children.length-1];
+function tp(){const d=E('div');const tg=(t,k)=>{const r=E('div','tg','<span>'+t+'</span>'),b=E('button','',S[k]?'Қосулы':'Өшірулі');b.className=S[k]?'on':'';b.onclick=()=>{S[k]=S[k]?0:1;if(k=='snd'&&S.snd)bp(600,.2);b.textContent=S[k]?'Қосулы':'Өшірулі';b.className=S[k]?'on':'';sv();upBtn();if(cur)msg(curMsg)};r.append(b);d.append(r)};
+d.innerHTML='<h2>Мұғалім панелі</h2>';tg('Дыбыс','snd');const r=E('div','tg','<span>Анимация жылдамдығы</span>'),s=E('select','','<option value=".5">0.5×</option><option value="1">1×</option><option value="2">2×</option>');s.value=S.spd;s.onchange=()=>{S.spd=+s.value;sv()};r.append(s);d.append(r);
+tg('Заряд белгілері','chg');tg('Күш бағыттары / өріс','frc');tg('Микроскопиялық модель','mic');tg('Ғылыми түсіндірмелер','exp');
+const bx=E('div','tg');[['Автоматты орындау',()=>{if(cur){$('#md').hidden=1;stA()}else modal('Алдымен зертхана ашыңыз')}],['Қадам бойынша',()=>{if(cur&&!$('#lab').hidden){$('#md').hidden=1;auto=0;nx()}}],['Барлығын бастапқы күйге қайтару',()=>LABS.forEach(l=>l.rs())],['Толық экран',fs]].forEach(x=>{const b=E('button','',x[0]);b.onclick=x[1];bx.append(b)});bx.style.flexWrap='wrap';d.append(bx);modal(d.innerHTML);$('#mb').prepend(d);$('#mb').firstChild.nextSibling&&0}
+const HB=[['🔇 Дыбыс',b=>{S.snd=S.snd?0:1;b.textContent=S.snd?'🔊 Дыбыс қосулы':'🔇 Дыбыс өшірулі';if(S.snd)bp(600,.2);sv()}],['⛶ Толық экран',fs],['👩‍🏫 Мұғалім панелі',()=>{$('#mb').innerHTML='';tp2()}],['ℹ️ Ақпарат',()=>modal('<h2>ELECTRO LAB</h2><p>8-сынып физика. «Денелердің электрленуі. Электр заряды. Өткізгіштер мен диэлектриктер», §18, 88–93-беттер (Р. Башарұлы, Ш. Шүйіншина, К. Сейфоллина, «Атамұра», 2018).</p><p>Оқу мақсаттары: 8.4.1.1 электр зарядын сипаттау; 8.4.1.2 үйкеліс және индукция арқылы электрлену; 8.4.1.3 электрленудің оң және теріс әсерлері.</p><p>Пернелер: ← → тәжірибе, Space — тоқтату, R — қайта бастау, F — толық экран, Esc — мәзір. Заряд шамалары — шартты бірліктер, нақты өлшеу емес.</p>')]];
+function tp2(){const d=E('div');d.innerHTML='<h2>Мұғалім панелі</h2>';const tg=(t,k)=>{const r=E('div','tg','<span>'+t+'</span>'),b=E('button','',S[k]?'Қосулы':'Өшірулі');b.className=S[k]?'on':'';b.onclick=()=>{S[k]=S[k]?0:1;if(k=='snd'&&S.snd)bp(600,.2);b.textContent=S[k]?'Қосулы':'Өшірулі';b.className=S[k]?'on':'';sv();upBtn();if(cur)msg(curMsg)};r.append(b);d.append(r)};
+tg('Дыбыс','snd');const r=E('div','tg','<span>Анимация жылдамдығы</span>'),s=E('select','','<option value=".5">0.5×</option><option value="1">1×</option><option value="2">2×</option>');s.value=S.spd;s.onchange=()=>{S.spd=+s.value;sv()};r.append(s);d.append(r);
+tg('Заряд белгілері','chg');tg('Күш бағыттары / өріс','frc');tg('Микроскопиялық модель','mic');tg('Ғылыми түсіндірмелер','exp');
+const bx=E('div','tg');bx.style.flexWrap='wrap';[['Автоматты орындау',()=>{if(cur&&!$('#lab').hidden){$('#md').hidden=1;stA()}}],['Қадам бойынша орындау',()=>{if(cur&&!$('#lab').hidden){$('#md').hidden=1;auto=0;nx()}}],['Барлық тәжірибелерді бастапқы күйге қайтару',()=>LABS.forEach(l=>l.rs())],['Толық экран',fs]].forEach(x=>{const b=E('button','',x[0]);b.onclick=x[1];bx.append(b)});d.append(bx);
+const cb=E('button','','Жабу');cb.style.cssText='background:var(--ng);color:#fff;width:100%;margin-top:10px';cb.onclick=()=>$('#md').hidden=1;d.append(cb);$('#mb').innerHTML='';$('#mb').append(d);$('#md').hidden=0}
+HB.forEach(h=>{const b=E('button','',h[0]);b.onclick=()=>{bp(660,.06);h[1](b)};$('#hb').append(b)});
+[['#2563EB',8,10],['#E53935',70,50],['#00A6C7',30,80],['#F4B400',85,12]].forEach((o,i)=>{const e=E('div','orb');e.style.cssText='width:26vw;height:26vw;background:'+o[0]+';left:'+o[1]+'vw;top:'+o[2]+'vh';document.body.prepend(e);e.animate([{transform:'translate(0,0)'},{transform:'translate(-6vw,5vh)'},{transform:'translate(0,0)'}],{duration:9000+i*2000,iterations:Infinity})});
+addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const k=e.key,inLab=!$('#lab').hidden;
+if(k=='Escape'){if(!$('#md').hidden)$('#md').hidden=1;else if(!document.fullscreenElement&&inLab)home();return}
+if(!inLab)return;if(k=='ArrowRight'){openLab(ci+1)}else if(k=='ArrowLeft'){openLab(ci-1)}else if(k==' '){e.preventDefault();pa=!pa;upBtn()}else if(k=='r'||k=='R')rst();else if(k=='f'||k=='F')fs()});
+document.addEventListener('fullscreenchange',()=>setTimeout(rsz,100));
+rsz();requestAnimationFrame(loop);
+</script></body></html>
